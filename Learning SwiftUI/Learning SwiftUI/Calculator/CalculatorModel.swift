@@ -2,83 +2,48 @@
 //  CalculatorModel.swift
 //  Learning SwiftUI
 //
-//  Created by Ezreal on 2020/7/27.
+//  Created by Ezreal on 2020/7/28.
 //  Copyright © 2020 Ezeal. All rights reserved.
 //
 
-import Foundation
-import UIKit
+import Combine
 
-// MARK: - 按钮模型
-
-enum CalculatorButtonItem: Hashable {// rawValue 作为 ForEach.id 的要求 Hashable
+class CalculatorModel: ObservableObject {
     
-    /// 运算符
-    enum Op: String {
-        case plus    = "+"
-        case minus   = "-"
-        case divide  = "÷"
-        case multiply = "×"
-        case equal   = "="
+    @Published var brain: CalculatorBrain = .left("0")
+    @Published var history: [CalculatorButtonItem] = []
+    
+    var temporaryKept: [CalculatorButtonItem] = []
+    
+    var historyDetail: String {
+        return history.map{ $0.description }.joined()
     }
     
-    /// 指令
-    enum Command: String {
-        case clear   = "AC"
-        case flip    = "+/-"
-        case percent = "%"
+    var totalCount: Int {
+        history.count + temporaryKept.count
     }
-    
-    case digit(Int)
-    case dot
-    case op(Op)
-    case command(Command)
-}
 
-extension CalculatorButtonItem {
-    
-    var title: String {
-        switch self {
-        case .digit(let value): return String(value)
-        case .dot: return "."
-        case .op(let op): return op.rawValue
-        case .command(let command): return command.rawValue
+    var slidingIndex: Float = 0 {
+        didSet {
+            keepHistory(upTo: Int(slidingIndex))
         }
     }
     
-    var size: CGSize {
-        if case .digit(let value) = self, value == 0 {
-            return CGSize(width: 88 * 2 + 8, height: 88)
-        }
-        return CGSize(width: 88, height: 88)
+    func apply(_ item: CalculatorButtonItem) {
+        brain = brain.apply(item: item)
+        history.append(item)
+        temporaryKept.removeAll()
+        slidingIndex = Float(totalCount)
     }
     
-    var backgroundColorName: String {
-        switch self {
-        case .digit, .dot: return "digitBackground"
-        case .op: return "operatorBackground"
-        case .command: return "commandBackground"
-        }
+    func keepHistory(upTo index: Int) {
+        precondition(index <= totalCount, "Out of index.")
+        
+        let total = history + temporaryKept
+        
+        history = Array(total[..<index])
+        temporaryKept = Array(total[index...])
+        
+        brain = history.reduce(CalculatorBrain.left("0")) { result, item in result.apply(item: item) }
     }
-}
-
-// MARK: - 计算器的状态
-
-/// 左侧数字 + 计算符号 + 右侧数字 + 计算符号或等号
-enum CalculatorBrain {
-    /// 计算器正在输入算式左侧数字，这个状态将在用户按下计算操作按钮 (加减乘除号) 后改变为下一个状态。
-    case left(String)
-    /// 计算器输入了左侧数字和计算符号，等待开始输入右侧符号。
-    case leftOp(
-        left: String,
-        op: CalculatorButtonItem.Op
-    )
-    /// 计算器已经输入了左侧数字，计算符号，和部分右侧数字，并在等待更多右侧数字的输入。
-    case leftOpRight(
-        left: String,
-        op: CalculatorButtonItem.Op,
-        right: String
-    )
-    /// 输入或计算结果出现了错误，无法继续。比如发生了“除以 0”的操作。
-    case error
 }
