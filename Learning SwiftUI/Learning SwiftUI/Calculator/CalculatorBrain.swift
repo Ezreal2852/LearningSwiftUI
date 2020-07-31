@@ -25,6 +25,7 @@ enum CalculatorBrain {
         op: CalculatorButtonItem.Op,
         right: String
     )
+    /// 计算器等号显示了一个结果或错误，此时相当于输入了一个左边的数字
     case equal(value: String)
     /// 输入或计算结果出现了错误，无法继续。比如发生了“除以 0”的操作。
     case error
@@ -58,6 +59,7 @@ enum CalculatorBrain {
 }
 
 /// 8位小数点以内格式化
+/// 文件内因为无需在他处使用，且不必为类型添加不必要的静态类型，闭包可以优化性能，防止重复调用
 fileprivate var formatter: NumberFormatter = {
     let f = NumberFormatter()
     f.minimumFractionDigits = 0
@@ -65,6 +67,8 @@ fileprivate var formatter: NumberFormatter = {
     f.numberStyle = .decimal
     return f
 }()
+
+// MARK: 根据输入的类型+计算器当前状态->计算器的输入后状态
 
 private extension CalculatorBrain {
     
@@ -178,25 +182,19 @@ private extension CalculatorBrain {
     }
 }
 
-// MARK: - 字符串功能拓展
+// MARK: - 字符串功能拓展(计算器功能键指令)
 
 extension String {
-    
-    /// 是否含有小数点
-    var containsDot: Bool { contains(".") }
-    
-    /// 是否为负数
-    var startWithNegative: Bool { starts(with: "-") }
-    
+        
     /// 输入数值
     func apply(num: Int) -> String { self == "0" ? "\(num)" : "\(self)\(num)" }
     
     /// 添加小数点
-    func applyDot() -> String { containsDot ? self : "\(self)." }
+    func applyDot() -> String { contains(".") ? self : "\(self)." }
     
-    /// 取负值
+    /// 取相反值
     func flipped() -> String {
-        if startWithNegative {
+        if starts(with: "-") {
             var s = self
             s.removeFirst()
             return s

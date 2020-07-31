@@ -27,6 +27,7 @@ struct CalculatorButton: View {
                 .frame(width: size.width, height: size.height)
                 .background(Color(backgroundColorName))
                 .cornerRadius(size.width / 2)
+//                .background(Color.green)
         }
     }
 }
@@ -39,13 +40,19 @@ struct CalculatorButtonRow: View {
     
     @EnvironmentObject var model: CalculatorModel
     
+//    @Binding var brain: CalculatorBrain
+    
     var body: some View {
         HStack {
             ForEach(items, id: \.self) { item in
                 CalculatorButton(title: item.title,
                                  size: item.size,
                                  backgroundColorName: item.backgroundColorName,
-                                 action: { self.model.apply(item) })
+                                 action: {
+                                    self.model.apply(item)
+//                                    self.brain = self.brain.apply(item: item)
+                                    
+                })
             }
         }
     }
@@ -54,6 +61,8 @@ struct CalculatorButtonRow: View {
 // MARK: - 计算器列
 
 struct CalculatorButtonPad: View {
+    
+//    @Binding var brain: CalculatorBrain
         
     let data: [[CalculatorButtonItem]] = [[.command(.clear), .command(.flip), .command(.percent), .op(.divide)],
                                           [.digit(7), .digit(8), .digit(9), .op(.multiply)],
@@ -64,6 +73,7 @@ struct CalculatorButtonPad: View {
     var body: some View {
         
         VStack(spacing: 8) {
+            /// \.self 可以直接访问data中的元素，用元素本身值作为id，
             ForEach(data, id: \.self) { CalculatorButtonRow(items: $0) }
         }
     }
@@ -75,23 +85,41 @@ struct CalculatorView: View {
     
     @EnvironmentObject var model: CalculatorModel
     
+    /**
+     在传递 brain 时，我们在它前面加上美元符号 $。
+     在 Swift 5.1 中，对一个由 @ 符号修饰的属性，在它前面使用 $ 所取得的值，被称为投影属性 (projection property)。
+     有些 @ 属性，比如这里的 @State 和 @Binding，它们的投影属性就是自身所对应值的 Binding 类型。
+     不过要注意的是，并不是所有的 @ 属性都提供 $ 的投影访问方式。
+     这样一来，底层 CalculatorButtonRow 中对 brain 的修改，将反过来影响和设置最顶层 ContentView 中的 @State brain。
+     */
+//    @State var brain: CalculatorBrain = .left("0")
+    
     @State private var editingHistory = false
-        
+            
     var body: some View {
         
         VStack(spacing: 12) {
             Spacer()
-            Button("操作履历：\(model.history.count)") {
+            
+            Button("操作记录：\(model.history.count)") {
                 self.editingHistory = true
             }.sheet(isPresented: self.$editingHistory) {
                 HistoryView(model: self.model)
             }
+            
+//            HStack {
+//                Text("@State & @Binding: ")
+//                Text(brain.output).foregroundColor(.red)
+//                Spacer()
+//            }.padding()
+            
             Text(model.brain.output)
                 .font(.system(size: 76))
                 .minimumScaleFactor(0.5)
                 .padding(.trailing, 24)
                 .lineLimit(1)
                 .frame(minWidth: 0, maxWidth: .infinity, alignment: .trailing)
+            
             CalculatorButtonPad()
                 .padding(.bottom)
         }
@@ -103,21 +131,24 @@ struct CalculatorView: View {
 
 struct HistoryView: View {
     
+    /// @EnvironmentObject?
     @ObservedObject var model: CalculatorModel
     
     var body: some View {
         VStack {
             if model.totalCount == 0 {
-                Text("没有履历")
+                Text("没有记录")
             } else {
                 HStack {
-                    Text("履历").font(.headline)
+                    Text("记录：").font(.headline)
                     Text("\(model.historyDetail)").lineLimit(nil)
                 }
+                
                 HStack {
-                    Text("显示").font(.headline)
+                    Text("显示：").font(.headline)
                     Text("\(model.brain.output)")
                 }
+                
                 Slider(value: $model.slidingIndex,
                        in: 0...Float(model.totalCount),
                        step: 1)

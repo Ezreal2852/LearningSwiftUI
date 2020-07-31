@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		77048F4224D1689A005341D5 /* Converter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77048F4124D1689A005341D5 /* Converter.swift */; };
+		77048F6424D3BD70005341D5 /* 声明式和命令式.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77048F6324D3BD70005341D5 /* 声明式和命令式.swift */; };
 		7744736E24C076F200614A17 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7744736D24C076F200614A17 /* AppDelegate.swift */; };
 		7744737024C076F200614A17 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7744736F24C076F200614A17 /* SceneDelegate.swift */; };
 		7744737224C076F200614A17 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7744737124C076F200614A17 /* ContentView.swift */; };
@@ -20,6 +22,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		77048F4124D1689A005341D5 /* Converter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Converter.swift; sourceTree = "<group>"; };
+		77048F6324D3BD70005341D5 /* 声明式和命令式.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "声明式和命令式.swift"; sourceTree = "<group>"; };
 		7744736A24C076F200614A17 /* Learning SwiftUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Learning SwiftUI.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7744736D24C076F200614A17 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7744736F24C076F200614A17 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -66,7 +70,9 @@
 			children = (
 				7744736D24C076F200614A17 /* AppDelegate.swift */,
 				7744736F24C076F200614A17 /* SceneDelegate.swift */,
+				77048F4124D1689A005341D5 /* Converter.swift */,
 				7744737124C076F200614A17 /* ContentView.swift */,
+				77048F6324D3BD70005341D5 /* 声明式和命令式.swift */,
 				77E2340924CEC6A60085EDD7 /* Calculator */,
 				77E2340824CEC6960085EDD7 /* Supports */,
 				7744737524C076F200614A17 /* Preview Content */,
@@ -179,7 +185,9 @@
 				77E2340D24CEC6C80085EDD7 /* CalculatorButtonItem.swift in Sources */,
 				7744736E24C076F200614A17 /* AppDelegate.swift in Sources */,
 				7744737024C076F200614A17 /* SceneDelegate.swift in Sources */,
+				77048F6424D3BD70005341D5 /* 声明式和命令式.swift in Sources */,
 				7744737224C076F200614A17 /* ContentView.swift in Sources */,
+				77048F4224D1689A005341D5 /* Converter.swift in Sources */,
 				77E2344524D03C9D0085EDD7 /* CalculatorModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
